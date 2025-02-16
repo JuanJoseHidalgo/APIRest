@@ -22,32 +22,58 @@ fun main() {
 
     //  crear cliente http
     val client = HttpClient.newHttpClient()
+
     print("Introduce unha ip pública: ")
-    val ip=readln().toString()
-    val todo="https://ipinfo.io/"+ip+"/json?token=437bf12a0fd22b"
+    val ip = readln().toString()
+    val todo = "https://ipinfo.io/" + ip + "/json?token=437bf12a0fd22b"
 
-    // crear solicitud
-    val request = HttpRequest.newBuilder()
-        .uri(URI.create(todo))
-        .GET()
-        .build()
+    var opcion = 0
+    println("0.- Sair")
+    println("1.- Consulta de todos os datos")
+    println("2.- Consulta de coordenadas GPS")
+    println("3.- Consulta de compañía telefónica")
+    println("4.- Consulta de pais")
 
-    //  Enviar la solicitud con el cliente
-    val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+    print("Opcion: ")
+    opcion = readln().toInt()
+    while (opcion != 0) {
 
-    // obtener string con datos
-    val jsonBody = response.body()
+        // crear solicitud
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(todo))
+            .GET()
+            .build()
+
+        //  Enviar la solicitud con el cliente
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+        // obtener string con datos
+        val jsonBody = response.body()
 
 
-    val ipAddressInfo: Ipaddress = Json.decodeFromString(jsonBody)
+        val ipAddressInfo: Ipaddress = Json.decodeFromString(jsonBody)
 
-    // imprimir datos en formato legible
-    println("O enderezo IP: ${ipAddressInfo.ip}")
-    println("Corresponde á seguinte cidade: ${ipAddressInfo.city}")
-    println("Que está na rexion de: ${ipAddressInfo.region}")
-    println("Ubicada no seguinte pais: ${ipAddressInfo.country}")
-    println("As súas coordenadas GPS son: ${ipAddressInfo.loc}")
-    println("Corresponde á seguinte compañía telefónica: ${ipAddressInfo.org}")
-    println("Situada no seguinte código postal: ${ipAddressInfo.postal}")
-    println("Está na seguinte zona horaria: ${ipAddressInfo.timezone}")
+
+        // imprimir datos en formato legible
+        when (opcion) {
+            1 -> {
+                println("O enderezo IP: ${ipAddressInfo.ip}")
+                println("Corresponde á seguinte cidade: ${ipAddressInfo.city}")
+                println("Que está na rexion de: ${ipAddressInfo.region}")
+                println("Ubicada no seguinte pais: ${ipAddressInfo.country}")
+                println("As súas coordenadas GPS son: ${ipAddressInfo.loc}")
+                println("Corresponde á seguinte compañía telefónica: ${ipAddressInfo.org}")
+                println("Situada no seguinte código postal: ${ipAddressInfo.postal}")
+                println("Está na seguinte zona horaria: ${ipAddressInfo.timezone}") }
+            2 -> {
+                println("As súas coordenadas GPS son: ${ipAddressInfo.loc}") }
+            3 -> {
+                println("Corresponde á seguinte compañía telefónica: ${ipAddressInfo.org}") }
+            4 -> {
+                println("Ubicada no seguinte pais: ${ipAddressInfo.country}") }
+        }
+
+        print("Opcion: ")
+        opcion = readln().toInt()
+    }
 }
